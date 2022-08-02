@@ -23,11 +23,17 @@ data.forEach((build) => {
 
   test.describe(build + ': ' + 'Action: Add', () => {
     basicFunctions(build, 'Add', '2', '3', true, '5');
+    basicFunctions(build, 'Concatenate', '6', '-7', false, '6-7');
+  });
+
+  test.describe(build + ': ' + 'Action: Add', () => {
+    basicFunctions(build, 'Add', '2', '3.4', true, '5');
     basicFunctions(build, 'Add', '-1', '0', false, '-1');
   });
 
   test.describe(build + ': ' + 'Action: Subtract', () => {
     basicFunctions(build, 'Subtract', '8.6', '4.2', false, '4.4');
+    basicFunctions(build, 'Subtract', '4.2', '8.6', false, '-4.4');
     basicFunctions(build, 'Subtract', '8.6', '4.2', true, '4');
   });
 
@@ -43,6 +49,12 @@ data.forEach((build) => {
   });
 
   test.describe(build + ': Double Calculate button click', () => {
+    basicFunctions(build, 'Divide', '9', '4', false, '2.25');
+    basicFunctions(build, 'Divide', '9', '4', true, '2');
+    basicFunctions(build, 'Divide', '50', '-2', false, '-25');
+  });
+
+  test.describe(build + ': Double Calculate button click wokrs properly', () => {
     doubleCalculateButtonClick(build, 'Add', '5', '7', '12');
   });
 
@@ -92,7 +104,7 @@ function basicFunctions(build, action, number1, number2, onlyIntegers, result) {
  */
 function doubleCalculateButtonClick(build, action, number1, number2, result) {
 
-  test(build + ': Double Calculate button click test. ' + 'Action: ' + action + ' ' + number1 + ' and ' + number2 + ' Resul: ' + result, async ({ page }) => {
+  test(build + ': Double Calculate button click works well. ' + 'Action: ' + action + ' ' + number1 + ' and ' + number2 + ' Resul: ' + result, async ({ page }) => {
     await page.goto('https://testsheepnz.github.io/BasicCalculator');
     await page.selectOption('#selectBuild', { label: build });
     await page.locator('#number1Field').type(number1);
@@ -114,7 +126,7 @@ function doubleCalculateButtonClick(build, action, number1, number2, result) {
 */
 function clearButtonWorks(build, action, number1, number2, result) {
 
-  test('Clear button works.', async ({ page }) => {
+  test(build + ': Clear button works.', async ({ page }) => {
     await page.goto('https://testsheepnz.github.io/BasicCalculator');
     await page.selectOption('#selectBuild', { label: build });
     await page.locator('#number1Field').type(number1);
