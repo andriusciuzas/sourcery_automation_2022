@@ -61,84 +61,51 @@ data.forEach((build) => {
 
 /**
  * @param {string} build
+ */
+function chooseBuild(build) {
+  test("Build " + build, async ({ page }) => {
+    await page.selectOption("#selectBuild", { label: build });
+  });
+}
+/**
+ * @param {string} firstNumber
+ * @param {string} secondNumber
+ */
+function enterFirstAndSecondNumbers(firstNumber, secondNumber) {
+  test(
+    "First number " + firstNumber + "Second number " + secondNumber,
+    async ({ page }) => {
+      await page.locator("#number1Field").type(firstNumber);
+      await page.locator("#number2Field").type(firstNumber);
+    }
+  );
+}
+/**
  * @param {string} action
- * @param {string} result
- * @param {string} number1
- * @param {string} number2
+ */
+function selectOperation(action) {
+  test("Operation: " + action, async ({ page }) => {
+    await page.selectOption("#selectOperationDropdown", { label: action });
+  });
+}
+/**
  * @param {boolean} onlyIntegers
  */
-function basicFunctions(build, action, number1, number2, onlyIntegers, result) {
-  test(
-    build +
-      " Action: " +
-      action +
-      " " +
-      number1 +
-      " and " +
-      number2 +
-      ". Result: " +
-      result +
-      ". Only integers: " +
-      onlyIntegers,
-    async ({ page }) => {
-      await page.selectOption("#selectBuild", { label: build });
-      await page.locator("#number1Field").type(number1);
-      await page.locator("#number2Field").type(number2);
-      await page.selectOption("#selectOperationDropdown", { label: action });
-      await page.locator("#integerSelect").setChecked(onlyIntegers);
-      await page.locator("#calculateButton").click();
-      await expect(page.locator("#numberAnswerField")).toHaveValue(result);
-    }
-  );
+function integersOnly(onlyIntegers) {
+  test("Integers only selected: " + onlyIntegers, async ({ page }) => {
+    await page.locator("#integerSelect").setChecked(onlyIntegers);
+  });
 }
-
-/**
- * @param {string} build
- * @param {string} action
- * @param {string} number1
- * @param {string} number2
- * @param {string} result
- */
-function doubleCalculateButtonClick(build, action, number1, number2, result) {
-  test(
-    build +
-      ": Double Calculate button click works well. " +
-      "Action: " +
-      action +
-      " " +
-      number1 +
-      " and " +
-      number2 +
-      " Resul: " +
-      result,
-    async ({ page }) => {
-      await page.selectOption("#selectBuild", { label: build });
-      await page.locator("#number1Field").type(number1);
-      await page.locator("#number2Field").type(number2);
-      await page.selectOption("#selectOperationDropdown", { label: action });
-      await page.locator("#calculateButton").click();
-      await page.locator("#calculateButton").click();
-
-      await expect(page.locator("#numberAnswerField")).toHaveValue(result);
-    }
-  );
-}
-
-/**
- * @param {string} build
- * @param {string} action
- * @param {string} number1
- * @param {string} number2
- * @param {string} result
- */
-function clearButtonWorks(build, action, number1, number2, result) {
-  test(build + ": Clear button works.", async ({ page }) => {
-    await page.selectOption("#selectBuild", { label: build });
-    await page.locator("#number1Field").type(number1);
-    await page.locator("#number2Field").type(number2);
-    await page.selectOption("#selectOperationDropdown", { label: action });
+function clickCalculateButton() {
+  async ({ page }) => {
     await page.locator("#calculateButton").click();
-    await page.locator("#clearButton").click();
+  };
+}
+/**
+ * @param {string} result
+ */
+function getResult(result) {
+  test("Result: " + result, async ({ page }) => {
     await expect(page.locator("#numberAnswerField")).toHaveValue(result);
   });
 }
@@ -150,26 +117,25 @@ function clearButtonWorks(build, action, number1, number2, result) {
  * @param {string} number2
  * @param {string} result
  */
-function correctErrorMessage(build, action, number1, number2, result) {
-  test(
-    build +
-      ". Correct error messages test: " +
-      "Action: " +
-      action +
-      " " +
-      number1 +
-      " and " +
-      number2 +
-      ' Result: Error message "' +
-      result +
-      '"',
+function doubleCalculateButtonClick(build, action, number1, number2, result) {
     async ({ page }) => {
-      await page.selectOption("#selectBuild", { label: build });
-      await page.locator("#number1Field").type(number1);
-      await page.locator("#number2Field").type(number2);
-      await page.selectOption("#selectOperationDropdown", { label: action });
-      await page.locator("#calculateButton").click();
-      await expect(page.locator("#errorMsgField")).toHaveText(result);
+      await page.locator("#calculateButton").dblclick();
     }
-  );
+  ;
+}
+
+
+function clickClearButton() {
+  test("Clear button works.", async ({ page }) => {
+    await page.locator("#clearButton").click();
+  });
+}
+
+/**
+ * @param {string} errorMessage
+ */
+function correctErrorMessage(errorMessage) {
+  async ({ page }) => {
+    await expect(page.locator("#errorMsgField")).toHaveText(errorMessage);
+  };
 }
