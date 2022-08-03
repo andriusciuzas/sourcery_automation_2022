@@ -212,7 +212,9 @@ async function chooseBuild(build, page) {
  * @param {string} secondNumber
  */
 async function enterFirstAndSecondNumbers(firstNumber, secondNumber, page) {
+  await expect(page.locator("#number1Field")).toBeVisible();
   await page.locator("#number1Field").type(firstNumber);
+  await expect(page.locator("#number2Field")).toBeVisible();
   await page.locator("#number2Field").type(secondNumber);
 }
 
@@ -226,23 +228,28 @@ async function selectOperation(action, page) {
  * @param {boolean} onlyIntegers
  */
 async function integersOnly(onlyIntegers, page) {
+  await expect(page.locator("#integerSelect")).toBeVisible();
   await page.locator("#integerSelect").setChecked(onlyIntegers);
 }
 async function clickCalculateButton(page) {
+  await expect(page.locator("#calculateButton")).toBeVisible();
   await page.locator("#calculateButton").click();
 }
 /**
  * @param {string} result
  */
 async function getResult(result, page) {
+  await expect(page.locator("#numberAnswerField")).toBeVisible();
   await expect(page.locator("#numberAnswerField")).toHaveValue(result);
 }
 
 async function doubleCalculateButtonClick(page) {
+  await expect(page.locator("#calculateButton")).toBeVisible();
   await page.locator("#calculateButton").dblclick();
 }
 
 async function clickClearButton(page) {
+  await expect(page.locator("#clearButton")).toBeVisible();
   await page.locator("#clearButton").click();
 }
 
