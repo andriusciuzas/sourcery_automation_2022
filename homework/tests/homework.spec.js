@@ -3,142 +3,252 @@ const { test, expect } = require("@playwright/test");
 
 const data = ["Prototype", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
-const
-positiveInteger = '8',
-positiveFloat = '4.6',
-zero = '0',
-negativeInteger = '-4',
-negativeFloat = '-7.3',
-text = 'gh'
+const positiveInteger = "8",
+  positiveFloat = "4.6",
+  zero = "0",
+  negativeInteger = "-4",
+  negativeFloat = "-7.3",
+  text = "gh",
+  emptyField = "";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("https://testsheepnz.github.io/BasicCalculator");
 });
 
 data.forEach((build) => {
-  test.describe(build + ": " + "Action: Concatenate", () => {
-    chooseBuild(build,);
-    enterFirstAndSecondNumbers(firstNumbet, secondNumber);
-
+  test(build + ": Concatenate two positive integers", async ({ page }) => {
+    await chooseBuild(build, page);
+    await enterFirstAndSecondNumbers(positiveInteger, positiveInteger, page);
+    await selectOperation("Concatenate", page);
+    await integersOnly(false, page);
+    await clickCalculateButton(page);
+    await getResult("88", page);
   });
-
-  /**
-   * @param {string} build
-   * @param {string} action
-   * @param {string} firstNumbet
-   * @param {string} secondNumber
-   * @param {boolean} onlyIntegers
-   * @param {string} result
-   */
-  function basicFunctions(build, action, firstNumbet, secondNumber, onlyIntegers, result) {
-    test(
-      build +
-        " Action: " +
-        action +
-        " " +
-        firstNumbet +
-        " and " +
-        secondNumber +
-        ". Result: " +
-        result +
-        ". Only integers: " +
-        onlyIntegers,
-      async ({ page }) => {
-        /**
-         * @param {any} build
-         */
-        function chooseBuild(build);
-        /**
-         * @param {any} firstNumber
-         * @param {any} secondNumber
-         */
-        function enterFirstAndSecondNumbers(firstNumber, secondNumber);
-        /**
-         * @param {any} action
-         */
-        function selectOperation(action);
-        /**
-         * @param {any} onlyIntegers
-         */
-        function integersOnly(onlyIntegers);
-        function clickCalculateButton();
-        /**
-         * @param {any} result
-         */
-        function getResult(result);
-      }
-    );
-  }
-
+  test(
+    build + ": Concatenate positive and negative integers",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, negativeInteger, page);
+      await selectOperation("Concatenate", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await getResult("8-4", page);
+    }
+  );
+  test(
+    build + ": Add positive integer and positive float with integers only ON",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, positiveFloat, page);
+      await selectOperation("Add", page);
+      await integersOnly(true, page);
+      await clickCalculateButton(page);
+      await getResult("12", page);
+    }
+  );
+  test(build + ": Add negative integer and zero", async ({ page }) => {
+    await chooseBuild(build, page);
+    await enterFirstAndSecondNumbers(negativeInteger, zero, page);
+    await selectOperation("Add", page);
+    await integersOnly(true, page);
+    await clickCalculateButton(page);
+    await getResult("-4", page);
+  });
+  test(
+    build +
+      ": Subtract positive integer and positive float with integers only OFF",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, positiveFloat, page);
+      await selectOperation("Subtract", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await getResult("3.4", page);
+    }
+  );
+  test(
+    build +
+      ": Subtract positive integer and positive float with integers only ON",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, positiveFloat, page);
+      await selectOperation("Subtract", page);
+      await integersOnly(true, page);
+      await clickCalculateButton(page);
+      await getResult("3", page);
+    }
+  );
+  test(
+    build +
+      ": Multiply positive integer and positive float with integers only ON",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, positiveFloat, page);
+      await selectOperation("Multiply", page);
+      await integersOnly(true, page);
+      await clickCalculateButton(page);
+      await getResult("36", page);
+    }
+  );
+  test(
+    build +
+      ": Multiply positive integer and positive float with integers only OFF",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, positiveFloat, page);
+      await selectOperation("Multiply", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await getResult("36.8", page);
+    }
+  );
+  test(
+    build +
+      ": Divide positive float and positive integer with integers only OFF",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveFloat, positiveInteger, page);
+      await selectOperation("Divide", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await getResult("0.575", page);
+    }
+  );
+  test(
+    build +
+      ": Divide positive integer and positive float with integers only ON",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveFloat, positiveInteger, page);
+      await selectOperation("Divide", page);
+      await integersOnly(true, page);
+      await clickCalculateButton(page);
+      await getResult("0", page);
+    }
+  );
+  test(
+    build +
+      ": Divide positive integer and negative integer with integers only OFF",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, negativeInteger, page);
+      await selectOperation("Divide", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await getResult("-2", page);
+    }
+  );
+  test(build + ": Click calculate button twise", async ({ page }) => {
+    await chooseBuild(build, page);
+    await enterFirstAndSecondNumbers(positiveInteger, negativeInteger, page);
+    await selectOperation("Divide", page);
+    await integersOnly(false, page);
+    await doubleCalculateButtonClick(page);
+    await getResult("-2", page);
+  });
+  test(build + ": Clear button works properly", async ({ page }) => {
+    await chooseBuild(build, page);
+    await enterFirstAndSecondNumbers(positiveInteger, negativeInteger, page);
+    await selectOperation("Divide", page);
+    await integersOnly(false, page);
+    await clickCalculateButton(page);
+    await clickClearButton(page);
+    await getResult("", page);
+  });
+  test(
+    build + ": Correct error message when added text instead of first number",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(text, positiveInteger, page);
+      await selectOperation("Add", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await correctErrorMessage("Number 1 is not a number", page);
+    }
+  );
+  test(
+    build + ": Correct error message when added text instead of second number",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, text, page);
+      await selectOperation("Add", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await correctErrorMessage("Number 2 is not a number", page);
+    }
+  );
+  test(
+    build + ": Correct error message when divided by zero",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, zero, page);
+      await selectOperation("Divide", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await correctErrorMessage("Divide by zero error!", page);
+    }
+  );
+  test(
+    build + ": Correct error message when divided by empty field",
+    async ({ page }) => {
+      await chooseBuild(build, page);
+      await enterFirstAndSecondNumbers(positiveInteger, emptyField, page);
+      await selectOperation("Divide", page);
+      await integersOnly(false, page);
+      await clickCalculateButton(page);
+      await correctErrorMessage("Divide by zero error!", page);
+    }
+  );
+});
 
 /**
  * @param {string} build
  */
-function chooseBuild(build) {
-  test("Build " + build, async ({ page }) => {
-    await page.selectOption("#selectBuild", { label: build });
-  });
+async function chooseBuild(build, page) {
+  await page.selectOption("#selectBuild", { label: build });
 }
 /**
  * @param {string} firstNumber
  * @param {string} secondNumber
  */
-function enterFirstAndSecondNumbers(firstNumber, secondNumber) {
-  test(
-    "First number " + firstNumber + "Second number " + secondNumber,
-    async ({ page }) => {
-      await page.locator("#number1Field").type(firstNumber);
-      await page.locator("#number2Field").type(firstNumber);
-    }
-  );
+async function enterFirstAndSecondNumbers(firstNumber, secondNumber, page) {
+  await page.locator("#number1Field").type(firstNumber);
+  await page.locator("#number2Field").type(secondNumber);
 }
+
 /**
  * @param {string} action
  */
-function selectOperation(action) {
-  test("Operation: " + action, async ({ page }) => {
-    await page.selectOption("#selectOperationDropdown", { label: action });
-  });
+async function selectOperation(action, page) {
+  await page.selectOption("#selectOperationDropdown", { label: action });
 }
 /**
  * @param {boolean} onlyIntegers
  */
-function integersOnly(onlyIntegers) {
-  test("Integers only selected: " + onlyIntegers, async ({ page }) => {
-    await page.locator("#integerSelect").setChecked(onlyIntegers);
-  });
+async function integersOnly(onlyIntegers, page) {
+  await page.locator("#integerSelect").setChecked(onlyIntegers);
 }
-function clickCalculateButton() {
-  async ({ page }) => {
-    await page.locator("#calculateButton").click();
-  };
+async function clickCalculateButton(page) {
+  await page.locator("#calculateButton").click();
 }
 /**
  * @param {string} result
  */
-function getResult(result) {
-  test("Result: " + result, async ({ page }) => {
-    await expect(page.locator("#numberAnswerField")).toHaveValue(result);
-  });
+async function getResult(result, page) {
+  await expect(page.locator("#numberAnswerField")).toHaveValue(result);
 }
 
-function doubleCalculateButtonClick() {
-  async ({ page }) => {
-    await page.locator("#calculateButton").dblclick();
-  };
+async function doubleCalculateButtonClick(page) {
+  await page.locator("#calculateButton").dblclick();
 }
 
-function clickClearButton() {
-  test("Clear button works.", async ({ page }) => {
-    await page.locator("#clearButton").click();
-  });
+async function clickClearButton(page) {
+  await page.locator("#clearButton").click();
 }
 
 /**
  * @param {string} errorMessage
  */
-function correctErrorMessage(errorMessage) {
-  async ({ page }) => {
-    await expect(page.locator("#errorMsgField")).toHaveText(errorMessage);
-  };
+async function correctErrorMessage(errorMessage, page) {
+  await expect(page.locator("#errorMsgField")).toHaveText(errorMessage);
 }
