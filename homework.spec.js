@@ -19,6 +19,7 @@ const data = [
 data.forEach((build) => {
   test.describe(build + ': ' + 'Action: Concatenate', () => {
     basicFunctions(build, 'Concatenate', '2', '3', false, '23');
+    basicFunctions(build, 'Concatenate', 'a', 'b', false, 'ab');
     basicFunctions(build, 'Concatenate', '6', '-7', false, '6-7');
   });
 
